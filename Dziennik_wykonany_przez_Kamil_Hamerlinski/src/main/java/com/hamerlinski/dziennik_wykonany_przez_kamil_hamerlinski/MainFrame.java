@@ -4,10 +4,12 @@
  */
 package com.hamerlinski.dziennik_wykonany_przez_kamil_hamerlinski;
 
+import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,7 +23,22 @@ public class MainFrame extends javax.swing.JFrame {
      * Creates new form MainFrame
      */
     public MainFrame() {
-        initComponents();
+        initComponents(); 
+    }
+    public void SaveToFile(String line) throws IOException{
+        FileWriter fw = new FileWriter("zapis.txt", true);
+        fw.write(line);
+        fw.close();
+    }
+    public void ReadFromFile() throws IOException{
+        FileReader file = new FileReader("zapis.txt");
+        BufferedReader fr = new BufferedReader(file);
+        String line = "";
+        String rawLine;
+        while((rawLine = fr.readLine()) != null){
+            line += rawLine + "\n";
+        }
+        jTextArea1.setText(line);
     }
 
     /**
@@ -40,6 +57,8 @@ public class MainFrame extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
         jLabel6 = new javax.swing.JLabel();
         jClassBox = new javax.swing.JComboBox<>();
         jSubjectBox = new javax.swing.JComboBox<>();
@@ -47,6 +66,7 @@ public class MainFrame extends javax.swing.JFrame {
         jSurnameField = new javax.swing.JTextField();
         jScoreSlider = new javax.swing.JSlider();
         jSaveButton = new javax.swing.JButton();
+        jLoadButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -74,15 +94,21 @@ public class MainFrame extends javax.swing.JFrame {
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
         jPanel2.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
 
+        jTextArea1.setColumns(20);
+        jTextArea1.setRows(5);
+        jScrollPane1.setViewportView(jTextArea1);
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addComponent(jScrollPane1)
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 135, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)
         );
 
         jLabel6.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
@@ -103,6 +129,13 @@ public class MainFrame extends javax.swing.JFrame {
         jSaveButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jSaveButtonActionPerformed(evt);
+            }
+        });
+
+        jLoadButton.setText("Wczytaj");
+        jLoadButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jLoadButtonActionPerformed(evt);
             }
         });
 
@@ -129,11 +162,13 @@ public class MainFrame extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLoadButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jSaveButton))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel5)
                         .addGap(55, 55, 55)
-                        .addComponent(jScoreSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(jScoreSlider, javax.swing.GroupLayout.DEFAULT_SIZE, 411, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -166,7 +201,8 @@ public class MainFrame extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
-                    .addComponent(jSaveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jSaveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLoadButton, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(1, 1, 1))
         );
 
@@ -187,19 +223,26 @@ public class MainFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jSaveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jSaveButtonActionPerformed
-        try {
-            FileWriter writer = new FileWriter("zapis.txt");
-        } catch (IOException ex) {
-            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-        }
         String name = jNameField.getText();
         String surname = jSurnameField.getText();
         String clas = jClassBox.getItemAt(jClassBox.getSelectedIndex());
         String subject = jSubjectBox.getItemAt(jSubjectBox.getSelectedIndex());
         String grade = "" + jScoreSlider.getValue();
-        String line = name + ";" + surname + ";" + clas + ";" + subject + ";" + grade;
-        System.out.println(line);
+        String line = name + ";" + surname + ";" + clas + ";" + subject + ";" + grade + "\n";
+        try {
+            SaveToFile(line);
+        } catch (IOException ex) {
+            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jSaveButtonActionPerformed
+
+    private void jLoadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jLoadButtonActionPerformed
+        try {
+            ReadFromFile();
+        } catch (IOException ex) {
+            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jLoadButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -244,12 +287,15 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JButton jLoadButton;
     private javax.swing.JTextField jNameField;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JButton jSaveButton;
     private javax.swing.JSlider jScoreSlider;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JComboBox<String> jSubjectBox;
     private javax.swing.JTextField jSurnameField;
+    private javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables
 }
