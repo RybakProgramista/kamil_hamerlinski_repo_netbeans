@@ -1,3 +1,5 @@
-213123;123213;4PTN;J. Francuski;6
-dadasd;awdasd;3PTN;J. Angielski;6
-dasdas;dwadawasd;4PTN;J. Polski;4
+dawd;asdsa;1GTN;J. Polski;2
+dawdwaraawwaf;afada;5PTN;J. Polski;2
+Damian;Łuczak;2PTN;Matematyka;6
+Szumuk;Łuczak;3BDN;J. Polski;3
+jnkjfgdsa;hsdgsef;2PTN;Chemia;3

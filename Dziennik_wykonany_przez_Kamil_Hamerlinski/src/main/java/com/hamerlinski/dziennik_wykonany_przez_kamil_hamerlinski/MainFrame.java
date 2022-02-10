@@ -26,8 +26,8 @@ public class MainFrame extends javax.swing.JFrame {
         initComponents(); 
     }
     public void SaveToFile(String line) throws IOException{
-        FileWriter fw = new FileWriter("zapis.txt", true);
-        fw.write(line);
+        FileWriter fw = new FileWriter("zapis.txt");
+        fw.write(jTextArea1.getText() + line);
         fw.close();
     }
     public void ReadFromFile() throws IOException{
